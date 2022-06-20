@@ -1,5 +1,7 @@
+// Tableau des produits
 let products = [];
 
+// Appel de l'API pour récupérer les produits
 fetch("http://localhost:3000/api/products")
     .then(function(res) {
         if (res.ok) {
@@ -15,35 +17,36 @@ fetch("http://localhost:3000/api/products")
         // Une erreur est survenue
     });
 
+// Création des cards des produits
 function boucle (){
-    for (let i =0; i < products.length; i++) {
+    console.log(products.length);
+    for (let i = 0; i < 8; i++) {
         console.log(i);
 
     let productLink = document.createElement("a");
-    document.getElementById("items").appendChild(productLink);
-    productLink.href = "http://localhost:3000/api/products/107fb5b75607497b96722bda5b504926";
-    console.log(productLink);
+    productLink.href = './product.html?id='+products[0]._id;
 
     let productArticle = document.createElement("article");
-    productLink.appendchild(productArticle);
-    console.log(productArticle);
-
+    
     let productImg = document.createElement("img");
-    productArticle.appendchild(productImg);
-    productImg.src = product.imageUrl;
-    productImg.alt = product.altTxt;
+    productImg.src = products[i].imageUrl;
+    productImg.alt = products[i].altTxt;
 
-    let productTitle = document.creatElement("h3");
-    productArticle.appendchild(productTitle);
+    let productTitle = document.createElement("h3");
     productTitle.classList.add("productName");
-    productTitle.innerHTML = product.name;
-    console.log(productTitle);
+    productTitle.innerText = products[i].name;
 
-    let productText = document.creatElement("p");
-    productArticle.appendChild(productText);
+    let productText = document.createElement("p");
     productText.classList.add("ProductDescription");
-    productText.innerHTML = product.description;
-    console.log(productText);
+    productText.innerHTML = products[i].description;
+
+        
+    productArticle.appendChild(productText);
+    productArticle.appendChild(productTitle);
+    productArticle.appendChild(productImg);
+    productLink.appendChild(productArticle);
+    document.getElementById("items").appendChild(productLink);
+
     }
 }
 
