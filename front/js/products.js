@@ -1,5 +1,5 @@
 // Tableau des produits
-let products = [];
+let products;
 
 // Appel de l'API pour récupérer les produits
 fetch("http://localhost:3000/api/products")
@@ -23,7 +23,7 @@ function boucle (){
         console.log(i);
 
     let productLink = document.createElement("a");
-    productLink.href = './product.html?id='+products[i]._id;
+    productLink.href = './product.html?id='+products[0]._id;
 
     let productArticle = document.createElement("article");
     
@@ -45,4 +45,5 @@ function boucle (){
     productLink.appendChild(productArticle);
     document.getElementById("items").appendChild(productLink);
     }
+    console.log(products);
 }
