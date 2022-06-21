@@ -19,12 +19,11 @@ fetch("http://localhost:3000/api/products")
 
 // Création des cards des produits
 function boucle (){
-    console.log(products.length);
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < products.length; i++) {
         console.log(i);
 
     let productLink = document.createElement("a");
-    productLink.href = './product.html?id='+products[0]._id;
+    productLink.href = './product.html?id='+products[i]._id;
 
     let productArticle = document.createElement("article");
     
@@ -39,17 +38,11 @@ function boucle (){
     let productText = document.createElement("p");
     productText.classList.add("ProductDescription");
     productText.innerHTML = products[i].description;
-
-        
+  
     productArticle.appendChild(productText);
     productArticle.appendChild(productTitle);
     productArticle.appendChild(productImg);
     productLink.appendChild(productArticle);
     document.getElementById("items").appendChild(productLink);
-
     }
 }
-
-let str = window.location.href;
-let url = new URL(str);
-let idProduct = url.searchParams.get("id");
