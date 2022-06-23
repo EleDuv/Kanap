@@ -23,7 +23,7 @@ function boucle (){
         console.log(i);
 
     let productLink = document.createElement("a");
-    productLink.href = './product.html?id='+products[0]._id;
+    productLink.href = './product.html?id='+products[i]._id;
 
     let productArticle = document.createElement("article");
     
