@@ -59,41 +59,31 @@ console.log(cartColor);
 const cartQuantity = document.querySelector("#quantity");
 console.log(cartQuantity);
 
-
 // Création d'un tableau de stockage dans le localStorage
-let storage = localStorage.setItem("cartItem", item);
-
-// Stockage dans un tableau
-var cartArray = [cartItem];
-console.log(cartArray);
-
-// Recherche de l'élément pour l'ajouter au localStorage
-function checkCart(){
-  let getStorage = JSON.parse(localStorage.getItem('cartItem'));
-  cartArray.forEach((item) => {
-    // Est déjà dans le panier : ne modifier que la quantité
-    if (cartId === idProduct && cartItem.cartColor === getStorage.cartColor){
-      this.storage.push(cartItem.cartQuantity++)
-    }
-    // n'est pas déjà dans le panier alors ajouter tous les éléments)
-    else{ 
-      this.storage.push(cartItem)
-    }
-  })
+function saveCart(cartItem){
+  localStorage.setItem("cart", JSON.stringify(cartItem));
 }
-console.log(checkCart);
 
+// Récupération du tableau du localStorage
+function getCart(){
+  let cart = localStorage.getItem('cart');
+  if (cart == null) {
+    return [{
+      cartId : idProduct,
+      cartColor : cartColor.value,
+      cartQuantity : cartQuantity.value,
+    }];
+  } else {
+    return JSON.parse(cart);
+  }
+}
+
+// Ajout d'articles au panier
 function addToCart(){
-  // Stockage des valeurs des produits dans un objet
-  let cartItem = {
-    cartId : idProduct,
-    cartColor : cartColor.value,
-    cartQuantity : cartQuantity.value,
-  };
-  console.log(cartItem);
-  checkCart();
+  let cart = getCart();
+  let foundItem = cart.find(el => el.cartId == idProduct && el.cartColor == cartColor);
+    if (foundItem != undefined) {
+      foundItem.cartQuantity = cartQuantity.value;
+    }
+    saveCart(cart);
 }
-
-
-// Transformation de l'objet au format JSON
-let objectValue = JSON.stringify(cartItem);
