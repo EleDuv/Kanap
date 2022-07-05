@@ -77,6 +77,7 @@ function getCart(){
     return JSON.parse(cart);
   }
 }
+console.log(getCart);
 
 // Ajout d'articles au panier
 function addToCart(){
