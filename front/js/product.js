@@ -52,16 +52,16 @@ productApi();
 let addToCartBtn = document.getElementById("addToCart").addEventListener("click", addToCart);
 
 // Récupération des éléments nécessaires
-const cartId = idProduct;
-console.log(cartId);
-const cartColor = document.querySelector("#colors");
-console.log(cartColor);
-const cartQuantity = document.querySelector("#quantity");
-console.log(cartQuantity);
+const id = idProduct;
+console.log(id);
+const color = document.querySelector("#colors");
+console.log(color);
+const quantity = document.querySelector("#quantity");
+console.log(quantity);
 
 // Création d'un tableau de stockage dans le localStorage
-function saveCart(cartItem){
-  localStorage.setItem("cart", JSON.stringify(cartItem));
+function saveCart(Item){
+  localStorage.setItem("cart", JSON.stringify(Item));
 }
 
 // Récupération du tableau du localStorage
@@ -69,22 +69,28 @@ function getCart(){
   let cart = localStorage.getItem('cart');
   if (cart == null) {
     return [{
-      cartId : idProduct,
-      cartColor : cartColor.value,
-      cartQuantity : cartQuantity.value,
+      id : idProduct,
+      color : color.value,
+      quantity : quantity.value,
     }];
   } else {
     return JSON.parse(cart);
   }
 }
-console.log(getCart);
 
-// Ajout d'articles au panier
+// Ajout d'articles au panier 
 function addToCart(){
   let cart = getCart();
-  let foundItem = cart.find(el => el.cartId == idProduct && el.cartColor == cartColor);
+  let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
     if (foundItem != undefined) {
-      foundItem.cartQuantity = cartQuantity.value;
+      foundItem.quantity = quantity.value;
+    } else {
+      let newItem = {
+        id : idProduct,
+        color : color.value,
+        quantity : quantity.value,
+      };
+      cart.push(newItem);
     }
     saveCart(cart);
 }
