@@ -60,8 +60,8 @@ const quantity = document.querySelector("#quantity");
 console.log(quantity);
 
 // Création d'un tableau de stockage dans le localStorage
-function saveCart(Item){
-  localStorage.setItem("cart", JSON.stringify(Item));
+function saveCart(item){
+  localStorage.setItem("cart", JSON.stringify(item));
 }
 
 // Récupération du tableau du localStorage
