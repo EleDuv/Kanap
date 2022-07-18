@@ -1,16 +1,11 @@
 // Récupération du localStorage
-//function itemInfo(){
 let cart = JSON.parse(localStorage.getItem("cart"));
 console.log(cart);
-//}
-
-//itemInfo();
 
 // Récupération des datas API
 const getData = async () => {
   const response = await fetch("http://localhost:3000/api/products");
   const product = await response.json();
-  console.log(product);
   cart.forEach(item => {
     const foundItem = product.find(p => p._id == item.id)
     displayProduct(item, foundItem)
@@ -33,7 +28,7 @@ function displayProduct(cart, product) {
 
   let img = document.createElement("img");
   img.setAttribute("src", product.imageUrl);
-  img.setAttribute("alt", product.altText);
+  img.setAttribute("alt", product.altTxt);
 
   let content = document.createElement("div");
   content.className = "cart__item__content";
@@ -46,10 +41,9 @@ function displayProduct(cart, product) {
 
   let contentColor = document.createElement("p");
   contentColor.innerHTML = cart.color;
-  console.log(cart.color);
 
   let contentPrice = document.createElement("p");
-  contentPrice.innerHTML = product.price;
+  contentPrice.innerHTML = product.price + " €";
 
   let contentSettings = document.createElement("div");
   contentSettings.className = "cart__item__content__settings";
@@ -70,8 +64,9 @@ function displayProduct(cart, product) {
   let contentDelete = document.createElement("div");
   contentDelete.className = "cart__item__content__settings__delete";
 
-  let deleteItem = document.createElement("div");
+  let deleteItem = document.createElement("p");
   deleteItem.className = "deleteItem";
+  deleteItem.innerHTML = "Supprimer"
 
   section.appendChild(article);
   article.appendChild(imgDiv);
@@ -89,18 +84,26 @@ function displayProduct(cart, product) {
   contentDelete.appendChild(deleteItem);
 }
 
-
-/*
 // Suppression d'article 
-function removeFromCart(item){
-    let productStorage = localStorage.getItem("cart");
-    productStorage = productStorage.filter(el => el.id != item.idProduct);
-    localStorage.setItem("cart", JSON.stringify(productStorage));
+function removeFromCart(){
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    const element = document.querySelector("cart__items");
+    const dataId = element.closest("cart__item");
+    console.log(dataId);
+    const id = dataId.dataset.id;
+    const color = dataId.dataset.color;
+    let newCart = cart.filter(el => el.id != id || el.color != color);
+    localStorage.setItem("cart", JSON.stringify(newCart));
 }
+
+removeFromCart();
+
+document.querySelector("deleteItem").addEventListener("click", removeFromCart);
+
 
 // Modification de la quantité 
 function changeQuantity(product, quantity){
-    let productStorage = localStorage.getItem("cart");
+    let cart = JSON.parse(localStorage.getItem("cart"));    
     let foundItem = cart.find(el => el.cartId == idProduct && el.cartColor == cartColor.value);
     if (foundItem != undefined) {
       foundItem.cartQuantity = cartQuantity.value;
@@ -111,10 +114,28 @@ function changeQuantity(product, quantity){
     localStorage.setItem("cart", JSON.stringify(productStorage));
 }
 
+const input = document.querySelector("itemQuantity")
+input.addEventListener("change", changeQuantity);
+
 // Obtention du nombre d'articles
 function getNumberProduct(){
-    let productStorage = localStorage.getItem("cart");
+    let cart = JSON.parse(localStorage.getItem("cart"));
     let number = 0;
-    for (let )
-    return 
-}*/
+    for (let product of cart){
+      number += product.quantity;
+    }
+    return number;
+}
+let totalQuantity = document.getElementById("totalQuantity").innerHTML = getNumberProduct();
+
+// Obtention du prix total
+function getTotalPrice(){
+  let cart = JSON.parse(localStorage.getItem("cart"));
+  let total = 0;
+  for (let product of cart){
+    total =+ product.quantity * product.price;
+  }
+  return total;
+}
+
+let totalPrice = document.getElementById("totalPrice").innerHTML = getTotalPrice();
