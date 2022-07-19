@@ -66,7 +66,7 @@ function saveCart(item){
 
 // Récupération du tableau du localStorage
 function getCart(){
-  let cart = localStorage.getItem('cart');
+  let cart = localStorage.getItem("cart");
   if (cart == null) {
     return [{
       id : idProduct,

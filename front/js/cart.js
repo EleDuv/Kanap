@@ -52,7 +52,7 @@ function displayProduct(cart, product) {
   contentQuantity.className = "cart__item__content__settings__quantity";
 
   let quantity = document.createElement("p");
-  quantity.innerHTML = cart.quantity;
+  quantity.innerHTML = "Qté : ";
 
   let input = document.createElement("input");
   input.setAttribute("type", "number");
@@ -60,6 +60,8 @@ function displayProduct(cart, product) {
   input.setAttribute("name", "itemQuantity");
   input.setAttribute("min", "1");
   input.setAttribute("max", "100");
+  input.setAttribute("value", cart.quantity)
+  input.addEventListener("change", changeQuantity);
 
   let contentDelete = document.createElement("div");
   contentDelete.className = "cart__item__content__settings__delete";
@@ -67,6 +69,7 @@ function displayProduct(cart, product) {
   let deleteItem = document.createElement("p");
   deleteItem.className = "deleteItem";
   deleteItem.innerHTML = "Supprimer"
+  deleteItem.addEventListener("click", removeFromCart);
 
   section.appendChild(article);
   article.appendChild(imgDiv);
@@ -85,57 +88,66 @@ function displayProduct(cart, product) {
 }
 
 // Suppression d'article 
-function removeFromCart(){
+function removeFromCart(e){
+  console.log(e.target);
     let cart = JSON.parse(localStorage.getItem("cart"));
-    const element = document.querySelector("cart__items");
-    const dataId = element.closest("cart__item");
-    console.log(dataId);
-    const id = dataId.dataset.id;
-    const color = dataId.dataset.color;
+    let element = e.target;
+    let cartItem = element.closest(".cart__item");
+    console.log(cartItem);
+    let id = cartItem.dataset.id;
+    let color = cartItem.dataset.color;
     let newCart = cart.filter(el => el.id != id || el.color != color);
     localStorage.setItem("cart", JSON.stringify(newCart));
+    location.reload();
 }
-
-removeFromCart();
-
-document.querySelector("deleteItem").addEventListener("click", removeFromCart);
-
 
 // Modification de la quantité 
-function changeQuantity(product, quantity){
-    let cart = JSON.parse(localStorage.getItem("cart"));    
-    let foundItem = cart.find(el => el.cartId == idProduct && el.cartColor == cartColor.value);
-    if (foundItem != undefined) {
-      foundItem.cartQuantity = cartQuantity.value;
-      if (foundItem.cartQuantity <= O){
-          removeFromCart(item);
-      }
-    }
-    localStorage.setItem("cart", JSON.stringify(productStorage));
+function changeQuantity(e){
+  console.log(e.target);
+  let cart = JSON.parse(localStorage.getItem("cart")); 
+  const newCart = [...cart];
+  const element = e.target;
+  const cartItem = element.closest(".cart__item");
+  const id = cartItem.dataset.id;
+  const color = cartItem.dataset.color;  
+  const foundItem = cart.find(el => el.id == id && el.color == color);
+  const index = cart.indexOf(foundItem);
+  newCart[index].quantity = parseInt(e.target.value);
+  if (foundItem != undefined) {
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  } 
+  //  Penser à modififier le prix total en conséquence
 }
-
-const input = document.querySelector("itemQuantity")
-input.addEventListener("change", changeQuantity);
+let totalQuantity = document.getElementById("totalQuantity").innerHTML = getNumberProduct();
+console.log(totalQuantity);
 
 // Obtention du nombre d'articles
 function getNumberProduct(){
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    let number = 0;
-    for (let product of cart){
-      number += product.quantity;
-    }
-    return number;
+  let cart = JSON.parse(localStorage.getItem("cart"));
+  let number = 0;
+  for (let product of cart){
+    number += parseInt(product.quantity);
+    console.log(product.quantity);
+    console.log(number);
+    console.log(typeof product.quantity);
+  }
+  return number;
 }
-let totalQuantity = document.getElementById("totalQuantity").innerHTML = getNumberProduct();
 
+
+
+/*
 // Obtention du prix total
 function getTotalPrice(){
   let cart = JSON.parse(localStorage.getItem("cart"));
   let total = 0;
+  console.log(total);
   for (let product of cart){
-    total =+ product.quantity * product.price;
+    total += product.quantity * product.price;
+    console.log(product.price);
   }
   return total;
 }
 
 let totalPrice = document.getElementById("totalPrice").innerHTML = getTotalPrice();
+*/
