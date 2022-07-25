@@ -6,11 +6,16 @@ console.log(cart);
 const getData = async () => {
   const response = await fetch("http://localhost:3000/api/products");
   const product = await response.json();
+  let priceArray = [];
   cart.forEach(item => {
     const foundItem = product.find(p => p._id == item.id)
     displayProduct(item, foundItem)
     console.log(foundItem);
+    priceArray.push(getTotalForProduct(product.quantity, product.price));
 });
+  let totalPrice = getTotalPrice(priceArray)
+  document.getElementById("totalPrice").innerHTML = totalPrice;
+  console.log(typeof getTotalPrice(totalPrice));
 };
 
 getData();
@@ -115,11 +120,9 @@ function changeQuantity(e){
   newCart[index].quantity = parseInt(e.target.value);
   if (foundItem != undefined) {
     localStorage.setItem("cart", JSON.stringify(newCart));
+    location.reload();
   } 
-  //  Penser à modififier le prix total en conséquence
 }
-let totalQuantity = document.getElementById("totalQuantity").innerHTML = getNumberProduct();
-console.log(totalQuantity);
 
 // Obtention du nombre d'articles
 function getNumberProduct(){
@@ -127,27 +130,130 @@ function getNumberProduct(){
   let number = 0;
   for (let product of cart){
     number += parseInt(product.quantity);
-    console.log(product.quantity);
-    console.log(number);
-    console.log(typeof product.quantity);
   }
   return number;
 }
 
+let totalQuantity = document.getElementById("totalQuantity").innerHTML = getNumberProduct();
 
+// Obtention du prix total de chaque article
+function getTotalForProduct(quantity, price) {
+  return quantity * price; 
+}
 
-/*
 // Obtention du prix total
-function getTotalPrice(){
-  let cart = JSON.parse(localStorage.getItem("cart"));
+function getTotalPrice(priceArray){
   let total = 0;
-  console.log(total);
-  for (let product of cart){
-    total += product.quantity * product.price;
-    console.log(product.price);
-  }
+  priceArray.forEach (p => {
+    total += p;
+  }) 
   return total;
 }
 
-let totalPrice = document.getElementById("totalPrice").innerHTML = getTotalPrice();
-*/
+  /// Gestion du formulaire
+// Récupération des éléments du DOM
+const firstName = document.getElementById("firstName"),
+      firstNameErrorMsg = document.getElementById("firstNameErrorMsg"),
+      lastName = document.getElementById("lastName"),
+      lastNameErrorMsg = document.getElementById("lastNameErrorMsg"),
+      address = document.getElementById("address"),
+      addressErrorMsg = document.getElementById("addressErrorMsg"),
+      city = document.getElementById("city"),
+      cityErrorMsg = document.getElementById("cityErrorMsg"),
+      email = document.getElementById("email"),
+      emailErrorMsg = document.getElementById("emailErrorMsg"),
+      order = document.getElementById("order");
+
+// Création des regex
+const nameCityRegExp = new RegExp ("[^a-z]{2,30}$"),
+      addressRegExp = new RegExp ("[^[a-zA-Z0-9\s,.'-]{3,}$]"),
+      emailRegExp = new RegExp ("[^a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+\.{1}[a-z]{1,10}$"); 
+
+// Création de l'objet contenant les informations clients
+const contact = {
+  firstName : "firstName.value",
+  lastName : "lastName.value",
+  address : "address.value",
+  city : "city.value",
+  email : "email.value"
+};
+console.log(contact);
+
+// Création du tableau contenant les id des produits du panier
+const products = [];
+for (let i = 0; i < cart.length; i++) {
+  products.push(cart[i].id);
+}
+console.log(products);
+
+// Création de l'objet contenant les infos clients et les id des produits
+let sendData = {contact, products};
+
+// Ecoute sur chaque input et création d'un data-set pour pouvoir traiter le bouton order selon qu'il y ait une erreur ou on
+firstName.addEventListener("keyup", t => {
+  t.test(nameCityRegExp);
+  t = true ? firstNameErrorMsg = "" : firstNameErrorMsg = 'Merci de remplir le champ "Prénom" avec uniquement des caractères.';
+  if (t = true) {
+    firstName.setAttribute("data", "foo");
+  }
+});
+
+lastName.addEventListener("keyup", t => {
+  t.test(nameCityRegExp);
+  t = true ? lastNameErrorMsg = "" : lastNameErrorMsg = 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
+  if (t = true) {
+    lastName.setAttribute("data", "foo");
+  }
+});
+
+address.addEventListener("keyup", t => {
+  t.test(addressRegExp);
+  t = true ? addressErrorMsg = "" : addressErrorMsg = 'Addresse incorrecte.';
+  if (t = true) {
+    address.setAttribute("data", "foo");
+  }
+});
+
+city.addEventListener("keyup", t => {
+  t.test(nameCityRegExp);
+  t = true ? cityErrorMsg = "" : cityErrorMsg = 'Merci de remplir le champ "Ville" avec uniquement des caractères.';
+  if (t = true) {
+    city.setAttribute("data", "foo");
+  }
+ });
+
+email.addEventListener("keyup", t => {
+  t.test(emailRegExp);
+  t = true ? emailErrorMsg = "" : emailErrorMsg = "L'email n'est pas valide.";
+  if (t = true) {
+    email.setAttribute("data", "foo");
+  }
+})
+
+// Méthode POST pour l'envoi des données
+const options = {
+    method : "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(sendData)
+  };
+
+// Envoi des données de la commande à l'API
+order.addEventListener("click", e => {
+  e.preventDefault();
+  fetch("http://localhost:3000/api/products/order", options)
+    .then (response => response.json())
+    .then (responseJS => {
+      let error = 0;
+      let input = document.getElementsByTagName("input"); 
+      for (let i = 0; i < input; i++) {                      // Je boucle sur tous les input
+        if (input[i].getAttribute("data-foo") != true) {     // Si l'input n'est pas rempli correctement
+          error += 1;                                        // J'incrémente error
+        } else if (error = 0) {                              // S'il n'y a aucune erreur
+          JSON.stringify(localStorage.setItem(responseJS));  // J'envoi les données au serveur
+        }
+      }
+    })
+  }
+  );
