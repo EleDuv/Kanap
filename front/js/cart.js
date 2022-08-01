@@ -182,6 +182,7 @@ const contact = {
 const products = [];
 for (let i = 0; i < cart.length; i++) {
   products.push(cart[i].id);
+  console.log(products);
 }
 
 // Création de l'objet contenant les infos clients et les id des produits
@@ -200,7 +201,6 @@ firstName.addEventListener("keyup", t => {
 
 lastName.addEventListener("keyup", t => {
   t = nameCityRegExp.test(lastName.value);
-  // t = true ? lastNameErrorMsg = "" : lastNameErrorMsg = 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
   lastNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
   if (t) {
     lastName.setAttribute("data-foo", "true");
@@ -261,9 +261,10 @@ order.addEventListener("click", e => {
     if (error == 0) {                                              // S'il n'y a aucune erreur
       fetch("http://localhost:3000/api/products/order", options)
       .then (response => response.json())
-      .then (responseJS => {
-        JSON.stringify(localStorage.setItem(responseJS));          // J'envoi les données au serveur
+      .then (data => {
+        window.location.href = './confirmation.html?id=' + data.orderId;   
       })
     }
+    console.log(data);      // J'envoi les données au serveur
   }
 });
