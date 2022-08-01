@@ -43,11 +43,7 @@ function productInfo(product) {
 // Appel de la fonction de requête de l'API
 productApi();
 
-
-
-
 /// Ajout d'articles au panier
-
 // Aller chercher l'id du bouton et déclencher l'événement au clic
 let addToCartBtn = document.getElementById("addToCart").addEventListener("click", addToCart);
 
@@ -71,26 +67,59 @@ function getCart(){
     return [{
       id : idProduct,
       color : color.value,
-      quantity : quantity.value,
+      quantity : parseInt(quantity.value),
     }];
   } else {
     return JSON.parse(cart);
   }
 }
 
+/*
 // Ajout d'articles au panier 
 function addToCart(){
   let cart = getCart();
   let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
+  let parsedQuantity = parseInt(quantity.value);
+  let parsedFoundItem = parseInt(foundItem.quantity);
+  console.log(parsedFoundItem);
+  console.log(typeof parsedQuantity);
+  if (parsedQuantity < 1 || parsedQuantity >= 100 || color.value === "") {
+    alert("Merci de sélectionner une couleur et une quantité entre 0 et 100");
+  } else {
+  if (foundItem != undefined) {
+    let parsedQuantity = parseInt(quantity.value);
+    let parsedFoundItem = parseInt(foundItem.quantity);
+    parsedFoundItem = parsedQuantity + parsedFoundItem;
+  } else {
+    let newItem = {
+      id : idProduct,
+      color : color.value,
+      quantity : parseInt(quantity.value),
+    };
+    cart.push(newItem);
+  }
+  saveCart(cart);
+}
+}
+*/
+
+function addToCart(){
+  let cart = getCart();
+  let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
+  if (quantity.value <= 0 || quantity.value >= 100 || color.value == "") {
+    alert('test')
+  } else {
+
     if (foundItem != undefined) {
-      foundItem.quantity = quantity.value;
+      foundItem.quantity = parseInt(quantity.value) + parseInt(foundItem.quantity);
     } else {
       let newItem = {
         id : idProduct,
         color : color.value,
-        quantity : quantity.value,
+        quantity : parseInt(quantity.value),
       };
       cart.push(newItem);
     }
     saveCart(cart);
+  }
 }

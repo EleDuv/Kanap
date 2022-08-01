@@ -11,11 +11,10 @@ const getData = async () => {
     const foundItem = product.find(p => p._id == item.id)
     displayProduct(item, foundItem)
     console.log(foundItem);
-    priceArray.push(getTotalForProduct(product.quantity, product.price));
+    priceArray.push(getTotalForProduct(item.quantity, foundItem.price));
 });
   let totalPrice = getTotalPrice(priceArray)
   document.getElementById("totalPrice").innerHTML = totalPrice;
-  console.log(typeof getTotalPrice(totalPrice));
 };
 
 getData();
@@ -150,6 +149,7 @@ function getTotalPrice(priceArray){
   return total;
 }
 
+
   /// Gestion du formulaire
 // Récupération des éléments du DOM
 const firstName = document.getElementById("firstName"),
@@ -165,68 +165,77 @@ const firstName = document.getElementById("firstName"),
       order = document.getElementById("order");
 
 // Création des regex
-const nameCityRegExp = new RegExp ("[^a-z]{2,30}$"),
-      addressRegExp = new RegExp ("[^[a-zA-Z0-9\s,.'-]{3,}$]"),
-      emailRegExp = new RegExp ("[^a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+\.{1}[a-z]{1,10}$"); 
+const nameCityRegExp = /[a-zA-Z^0-9\s]{3,32}/,
+      addressRegExp =  /[a-zA-Z0-9\s]{8,32}/,
+      emailRegExp =  /[a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+\.{1}[a-z]{1,10}/; 
 
 // Création de l'objet contenant les informations clients
 const contact = {
-  firstName : "firstName.value",
-  lastName : "lastName.value",
-  address : "address.value",
-  city : "city.value",
-  email : "email.value"
+  firstName : firstName.value,
+  lastName : lastName.value,
+  address : address.value,
+  city : city.value,
+  email : email.value
 };
-console.log(contact);
 
 // Création du tableau contenant les id des produits du panier
 const products = [];
 for (let i = 0; i < cart.length; i++) {
   products.push(cart[i].id);
 }
-console.log(products);
 
 // Création de l'objet contenant les infos clients et les id des produits
 let sendData = {contact, products};
 
 // Ecoute sur chaque input et création d'un data-set pour pouvoir traiter le bouton order selon qu'il y ait une erreur ou on
 firstName.addEventListener("keyup", t => {
-  t.test(nameCityRegExp);
-  t = true ? firstNameErrorMsg = "" : firstNameErrorMsg = 'Merci de remplir le champ "Prénom" avec uniquement des caractères.';
-  if (t = true) {
-    firstName.setAttribute("data", "foo");
+  t = nameCityRegExp.test(firstName.value);
+  firstNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Prénom" avec uniquement des caractères.';
+  if (t) {
+    firstName.setAttribute("data-foo", "true");
+  } else {
+    firstName.removeAttribute("data-foo");
   }
 });
 
 lastName.addEventListener("keyup", t => {
-  t.test(nameCityRegExp);
-  t = true ? lastNameErrorMsg = "" : lastNameErrorMsg = 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
-  if (t = true) {
-    lastName.setAttribute("data", "foo");
+  t = nameCityRegExp.test(lastName.value);
+  // t = true ? lastNameErrorMsg = "" : lastNameErrorMsg = 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
+  lastNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
+  if (t) {
+    lastName.setAttribute("data-foo", "true");
+  } else {
+    lastName.removeAttribute("data-foo");
   }
 });
 
 address.addEventListener("keyup", t => {
-  t.test(addressRegExp);
-  t = true ? addressErrorMsg = "" : addressErrorMsg = 'Addresse incorrecte.';
-  if (t = true) {
-    address.setAttribute("data", "foo");
+  t = addressRegExp.test(address.value);
+  addressErrorMsg.innerHTML = t ? "" : 'Addresse incorrecte.';
+  if (t) {
+    address.setAttribute("data-foo", "true");
+  } else {
+    address.removeAttribute("data-foo");
   }
 });
 
 city.addEventListener("keyup", t => {
-  t.test(nameCityRegExp);
-  t = true ? cityErrorMsg = "" : cityErrorMsg = 'Merci de remplir le champ "Ville" avec uniquement des caractères.';
-  if (t = true) {
-    city.setAttribute("data", "foo");
+  t = nameCityRegExp.test(city.value);
+  cityErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Ville" avec uniquement des caractères.';
+  if (t) {
+    city.setAttribute("data-foo", "true");
+  } else {
+    city.removeAttribute("data-foo");
   }
  });
 
 email.addEventListener("keyup", t => {
-  t.test(emailRegExp);
-  t = true ? emailErrorMsg = "" : emailErrorMsg = "L'email n'est pas valide.";
-  if (t = true) {
-    email.setAttribute("data", "foo");
+  t = emailRegExp.test(email.value);
+  emailErrorMsg.innerHTML = t ? "" : "L'email n'est pas valide.";
+  if (t) {
+    email.setAttribute("data-foo", "true");
+  } else {
+    email.removeAttribute("data-foo");
   }
 })
 
@@ -242,18 +251,19 @@ const options = {
 // Envoi des données de la commande à l'API
 order.addEventListener("click", e => {
   e.preventDefault();
-  fetch("http://localhost:3000/api/products/order", options)
-    .then (response => response.json())
-    .then (responseJS => {
-      let error = 0;
-      let input = document.getElementsByTagName("input"); 
-      for (let i = 0; i < input; i++) {                      // Je boucle sur tous les input
-        if (input[i].getAttribute("data-foo") != true) {     // Si l'input n'est pas rempli correctement
-          error += 1;                                        // J'incrémente error
-        } else if (error = 0) {                              // S'il n'y a aucune erreur
-          JSON.stringify(localStorage.setItem(responseJS));  // J'envoi les données au serveur
-        }
-      }
-    })
+  let error = 0;
+  let input = document.getElementsByTagName("input"); 
+  for (let i = 0; i < input.length - 2; i++) {                     // Je boucle sur tous les input
+    if (input[i].getAttribute("data-foo") != true) {               // Si l'input n'est pas rempli correctement
+      console.log(error);                                          // J'incrémente error
+      error += 1;      
+    } 
+    if (error == 0) {                                              // S'il n'y a aucune erreur
+      fetch("http://localhost:3000/api/products/order", options)
+      .then (response => response.json())
+      .then (responseJS => {
+        JSON.stringify(localStorage.setItem(responseJS));          // J'envoi les données au serveur
+      })
+    }
   }
-  );
+});
