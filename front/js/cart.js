@@ -166,7 +166,7 @@ const firstName = document.getElementById("firstName"),
       order = document.getElementById("order");
 
 // Création de variables d'état pour pouvoir gérer l'envoi du formulaire (si toutes les variables sont à true)
-let = firstNameState = false,
+let firstNameState = false,
       lastNameState = false,
       addressState = false,
       cityState = false,
@@ -212,7 +212,7 @@ emailState = t ? true : false;
 // Envoi des données de la commande à l'API
 order.addEventListener("click", e => {
 e.preventDefault();
-if (firstNameState) {                                              
+if (firstNameState, lastNameState, addressState, cityState, emailState) {                                              
   // Création de l'objet contenant les informations clients
   const contact = {
     firstName : firstName.value,
@@ -242,12 +242,24 @@ if (firstNameState) {
   };
 
   fetch("http://localhost:3000/api/products/order", options)
-  .then (response => response.json())
-  .then (data => {
-    console.log(data);
-    console.log(lastNameState);
-    console.log(contact);
-    window.location.href = './confirmation.html?id=' + data.orderId;   
-  })
+    .then (response => response.json())
+    .then (data => {
+      window.location.href = './confirmation.html?id=' + data.orderId;   
+    })
+  }
+  if (!firstNameState) {
+    firstNameErrorMsg.innerHTML = "Merci de remplir le champ 'prénom' avec uniquement des caractère";
+  }
+  if (!firstNameState) {
+    lastNameErrorMsg.innerHTML = "Merci de remplir le champ 'prénom' avec uniquement des caractère";
+  }
+  if (!firstNameState) {
+    addressErrorMsg.innerHTML = "Merci de remplir le champ 'prénom' avec uniquement des caractère";
+  }
+  if (!firstNameState) {
+    cityErrorMsg.innerHTML = "Merci de remplir le champ 'prénom' avec uniquement des caractère";
+  }
+  if (!firstNameState) {
+    emailErrorMsg.innerHTML = "Merci de remplir le champ 'prénom' avec uniquement des caractère";
   }
 });
