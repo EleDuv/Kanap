@@ -119,6 +119,7 @@ function changeQuantity(e){
   newCart[index].quantity = parseInt(e.target.value);
   if (foundItem != undefined) {
     localStorage.setItem("cart", JSON.stringify(newCart));
+    console.log(localStorage.getItem("cart"));
     location.reload();
   } 
 }
@@ -164,83 +165,75 @@ const firstName = document.getElementById("firstName"),
       emailErrorMsg = document.getElementById("emailErrorMsg"),
       order = document.getElementById("order");
 
+// Création de variables d'état pour pouvoir gérer l'envoi du formulaire (si toutes les variables sont à true)
+let = firstNameState = false,
+      lastNameState = false,
+      addressState = false,
+      cityState = false,
+      emailState = false;
+
 // Création des regex
 const nameCityRegExp = /[a-zA-Z^0-9\s]{3,32}/,
       addressRegExp =  /[a-zA-Z0-9\s]{8,32}/,
       emailRegExp =  /[a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+\.{1}[a-z]{1,10}/; 
 
-// Création de l'objet contenant les informations clients
-const contact = {
-  firstName : firstName.value,
-  lastName : lastName.value,
-  address : address.value,
-  city : city.value,
-  email : email.value
-};
-
-// Création du tableau contenant les id des produits du panier
-const products = [];
-for (let i = 0; i < cart.length; i++) {
-  products.push(cart[i].id);
-  console.log(products);
-}
-
-// Création de l'objet contenant les infos clients et les id des produits
-let sendData = {contact, products};
 
 // Ecoute sur chaque input et création d'un data-set pour pouvoir traiter le bouton order selon qu'il y ait une erreur ou on
 firstName.addEventListener("keyup", t => {
-  t = nameCityRegExp.test(firstName.value);
-  firstNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Prénom" avec uniquement des caractères.';
-  if (t) {
-    firstName.setAttribute("data-foo", "true");
-  } else {
-    firstName.removeAttribute("data-foo");
-  }
+t = nameCityRegExp.test(firstName.value);
+firstNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Prénom" avec uniquement des caractères.';
+firstNameState = t ? true : false;
 });
 
 lastName.addEventListener("keyup", t => {
-  t = nameCityRegExp.test(lastName.value);
-  lastNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
-  if (t) {
-    lastName.setAttribute("data-foo", "true");
-  } else {
-    lastName.removeAttribute("data-foo");
-  }
+t = nameCityRegExp.test(lastName.value);
+lastNameErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Nom" avec uniquement des caractères.';
+lastNameState = t ? true : false;
 });
 
 address.addEventListener("keyup", t => {
-  t = addressRegExp.test(address.value);
-  addressErrorMsg.innerHTML = t ? "" : 'Addresse incorrecte.';
-  if (t) {
-    address.setAttribute("data-foo", "true");
-  } else {
-    address.removeAttribute("data-foo");
-  }
+t = addressRegExp.test(address.value);
+addressErrorMsg.innerHTML = t ? "" : 'Addresse incorrecte.';
+addressState = t ? true : false;
 });
 
 city.addEventListener("keyup", t => {
-  t = nameCityRegExp.test(city.value);
-  cityErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Ville" avec uniquement des caractères.';
-  if (t) {
-    city.setAttribute("data-foo", "true");
-  } else {
-    city.removeAttribute("data-foo");
-  }
- });
+t = nameCityRegExp.test(city.value);
+cityErrorMsg.innerHTML = t ? "" : 'Merci de remplir le champ "Ville" avec uniquement des caractères.';
+cityState = t ? true : false;
+});
 
 email.addEventListener("keyup", t => {
-  t = emailRegExp.test(email.value);
-  emailErrorMsg.innerHTML = t ? "" : "L'email n'est pas valide.";
-  if (t) {
-    email.setAttribute("data-foo", "true");
-  } else {
-    email.removeAttribute("data-foo");
-  }
+t = emailRegExp.test(email.value);
+emailErrorMsg.innerHTML = t ? "" : "L'email n'est pas valide.";
+emailState = t ? true : false;
 })
 
-// Méthode POST pour l'envoi des données
-const options = {
+// Envoi des données de la commande à l'API
+order.addEventListener("click", e => {
+e.preventDefault();
+if (firstNameState) {                                              
+  // Création de l'objet contenant les informations clients
+  const contact = {
+    firstName : firstName.value,
+    lastName : lastName.value,
+    address : address.value,
+    city : city.value,
+    email : email.value,
+  };
+
+  // Création du tableau contenant les id des produits du panier
+  const products = [];
+  for (let i = 0; i < cart.length; i++) {
+    products.push(cart[i].id);
+    console.log(products);
+  }
+
+  // Création de l'objet contenant les infos clients et les id des produits
+  let sendData = {contact, products};
+
+  // Méthode POST pour l'envoi des données
+  const options = {
     method : "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -248,23 +241,13 @@ const options = {
     body: JSON.stringify(sendData)
   };
 
-// Envoi des données de la commande à l'API
-order.addEventListener("click", e => {
-  e.preventDefault();
-  let error = 0;
-  let input = document.getElementsByTagName("input"); 
-  for (let i = 0; i < input.length - 2; i++) {                     // Je boucle sur tous les input
-    if (input[i].getAttribute("data-foo") != true) {               // Si l'input n'est pas rempli correctement
-      console.log(error);                                          // J'incrémente error
-      error += 1;      
-    } 
-    if (error == 0) {                                              // S'il n'y a aucune erreur
-      fetch("http://localhost:3000/api/products/order", options)
-      .then (response => response.json())
-      .then (data => {
-        window.location.href = './confirmation.html?id=' + data.orderId;   
-      })
-    }
-    console.log(data);      // J'envoi les données au serveur
+  fetch("http://localhost:3000/api/products/order", options)
+  .then (response => response.json())
+  .then (data => {
+    console.log(data);
+    console.log(lastNameState);
+    console.log(contact);
+    window.location.href = './confirmation.html?id=' + data.orderId;   
+  })
   }
 });

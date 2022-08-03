@@ -107,7 +107,7 @@ function addToCart(){
   let cart = getCart();
   let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
   if (quantity.value <= 0 || quantity.value >= 100 || color.value == "") {
-    alert('test')
+    alert('Veuillez sélectionner une couleur et une quantité')
   } else {
 
     if (foundItem != undefined) {
