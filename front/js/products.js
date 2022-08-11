@@ -1,6 +1,5 @@
 // Tableau des produits
 let products;
-console.log(products);
 
 // Appel de l'API pour récupérer les produits
 fetch("http://localhost:3000/api/products")
@@ -10,7 +9,6 @@ fetch("http://localhost:3000/api/products")
     }
 })
 .then(function(value) {
-    console.log(value);
     products = value;
     boucle();
 })
@@ -21,7 +19,6 @@ fetch("http://localhost:3000/api/products")
 // Création des cards des produits
 function boucle (){
     for (let i = 0; i < products.length; i++) {
-        console.log(i);
         
         let productLink = document.createElement("a");
         productLink.href = './product.html?id='+products[i]._id;
@@ -46,6 +43,5 @@ function boucle (){
         productLink.appendChild(productArticle);
         document.getElementById("items").appendChild(productLink);
     }
-    console.log(products);
 }
 

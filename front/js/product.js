@@ -49,11 +49,8 @@ let addToCartBtn = document.getElementById("addToCart").addEventListener("click"
 
 // Récupération des éléments nécessaires
 const id = idProduct;
-console.log(id);
 const color = document.querySelector("#colors");
-console.log(color);
 const quantity = document.querySelector("#quantity");
-console.log(quantity);
 
 // Création d'un tableau de stockage dans le localStorage
 function saveCart(item){
@@ -74,52 +71,22 @@ function getCart(){
   }
 }
 
-/*
-// Ajout d'articles au panier 
-function addToCart(){
-  let cart = getCart();
-  let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
-  let parsedQuantity = parseInt(quantity.value);
-  let parsedFoundItem = parseInt(foundItem.quantity);
-  console.log(parsedFoundItem);
-  console.log(typeof parsedQuantity);
-  if (parsedQuantity < 1 || parsedQuantity >= 100 || color.value === "") {
-    alert("Merci de sélectionner une couleur et une quantité entre 0 et 100");
-  } else {
-  if (foundItem != undefined) {
-    let parsedQuantity = parseInt(quantity.value);
-    let parsedFoundItem = parseInt(foundItem.quantity);
-    parsedFoundItem = parsedQuantity + parsedFoundItem;
-  } else {
-    let newItem = {
-      id : idProduct,
-      color : color.value,
-      quantity : parseInt(quantity.value),
-    };
-    cart.push(newItem);
-  }
-  saveCart(cart);
-}
-}
-*/
-
 function addToCart(){
   let cart = getCart();
   let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);
   if (quantity.value <= 0 || quantity.value >= 100 || color.value == "") {
-    alert('Veuillez sélectionner une couleur et une quantité')
+    alert('Veuillez sélectionner une couleur, et une quantité comprise entre 1 et 100.')
   } else {
-
-    if (foundItem != undefined) {
-      foundItem.quantity = parseInt(quantity.value) + parseInt(foundItem.quantity);
-    } else {
-      let newItem = {
-        id : idProduct,
-        color : color.value,
-        quantity : parseInt(quantity.value),
-      };
-      cart.push(newItem);
-    }
+      if (foundItem != undefined) {
+        foundItem.quantity = parseInt(quantity.value) + parseInt(foundItem.quantity);
+      } else {
+        let newItem = {
+          id : idProduct,
+          color : color.value,
+          quantity : parseInt(quantity.value),
+        };
+        cart.push(newItem);
+      }
     saveCart(cart);
   }
 }

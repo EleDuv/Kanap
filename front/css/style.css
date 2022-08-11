@@ -146,6 +146,7 @@ main {
 	align-items: center;
 	margin-bottom: 40px;
 	padding-top: 25px;
+	padding-bottom : 25px;
 	width: 100%;
 	border-radius: 10px;
 }
