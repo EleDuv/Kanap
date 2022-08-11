@@ -230,7 +230,8 @@ order.addEventListener("click", e => {
   }
   if (!emailState) {
     emailErrorMsg.innerHTML = emailErrorMessage;
-  } else if (firstNameState, lastNameState, addressState, cityState, emailState) {                                           
+  } 
+  if (firstNameState && lastNameState && addressState && cityState && emailState) {                                           
     // Création de l'objet contenant les informations clients
     const contact = {
       firstName : firstName.value,
@@ -265,3 +266,4 @@ order.addEventListener("click", e => {
       })
     }
 });
+
