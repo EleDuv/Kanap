@@ -43,7 +43,7 @@ function productInfo(product) {
 // Appel de la fonction de requête de l'API
 productApi();
 
-/// Ajout d'articles au panier
+ /// Ajout d'articles au panier
 // Aller chercher l'id du bouton et déclencher l'événement au clic
 let addToCartBtn = document.getElementById("addToCart").addEventListener("click", addToCart);
 
@@ -61,16 +61,13 @@ function saveCart(item){
 function getCart(){
   let cart = localStorage.getItem("cart");
   if (cart == null) {
-    return [{
-      id : idProduct,
-      color : color.value,
-      quantity : parseInt(quantity.value),
-    }];
+    return [];
   } else {
     return JSON.parse(cart);
   }
 }
 
+// Ajout de l'article dans le localStorage
 function addToCart(){
   let cart = getCart();
   let foundItem = cart.find(el => el.id == idProduct && el.color == color.value);

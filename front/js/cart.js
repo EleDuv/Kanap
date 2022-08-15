@@ -1,4 +1,4 @@
-  /// Gestion du panier
+ /// Gestion du panier
 // Récupération du localStorage
 let cart = JSON.parse(localStorage.getItem("cart"));
 let product;
@@ -11,13 +11,7 @@ const getData = async () => {
   setTotalPrice(priceArray);
 };
 
-/*
- * Parcours le panier afin de calculer les prix totaux et afficher les produits
- * @param {object} cart - localStorage
- * @param {array} product - information produit de l'API (non stockées dans le ls)
- * @param {boolean} boolean withDisplay 
- * @returns tableau contenant produits avec leur totaux
- */
+// Parcours le panier afin de calculer les prix totaux et afficher les produits
 function loopCart (cart, product, withDisplay = false) {
   let priceArray = [];
   cart.forEach(item => {
@@ -216,54 +210,58 @@ emailState = t ? true : false;
 // Envoi des données de la commande à l'API
 order.addEventListener("click", e => {
   e.preventDefault();
-  if (!firstNameState) {
-    firstNameErrorMsg.innerHTML = firstNameErrorMessage;
-  }
-  if (!lastNameState) {
-    lastNameErrorMsg.innerHTML = lastNameErrorMessage;
-  }
-  if (!addressState) {
-    addressErrorMsg.innerHTML = addressErrorMessage;
-  }
-  if (!cityState) {
-    cityErrorMsg.innerHTML = cityErrorMessage;
-  }
-  if (!emailState) {
-    emailErrorMsg.innerHTML = emailErrorMessage;
-  } 
-  if (firstNameState && lastNameState && addressState && cityState && emailState) {                                           
-    // Création de l'objet contenant les informations clients
-    const contact = {
-      firstName : firstName.value,
-      lastName : lastName.value,
-      address : address.value,
-      city : city.value,
-      email : email.value,
-    };
-
-    // Création du tableau contenant les id des produits du panier
-    const products = [];
-    for (let i = 0; i < cart.length; i++) {
-      products.push(cart[i].id);
+  if (cart.length == 0) {
+    alert ("Veuillez ajouter un ou plusieurs articles au panier pour pouvoir passer commande");
+  } else if (cart.length >= 1) {
+    if (!firstNameState) {
+      firstNameErrorMsg.innerHTML = firstNameErrorMessage;
     }
+    if (!lastNameState) {
+      lastNameErrorMsg.innerHTML = lastNameErrorMessage;
+    }
+    if (!addressState) {
+      addressErrorMsg.innerHTML = addressErrorMessage;
+    }
+    if (!cityState) {
+      cityErrorMsg.innerHTML = cityErrorMessage;
+    }
+    if (!emailState) {
+      emailErrorMsg.innerHTML = emailErrorMessage;
+    } 
+    if (firstNameState && lastNameState && addressState && cityState && emailState) {                                           
+      // Création de l'objet contenant les informations clients
+      const contact = {
+        firstName : firstName.value,
+        lastName : lastName.value,
+        address : address.value,
+        city : city.value,
+        email : email.value,
+      };
 
-    // Création de l'objet contenant les infos clients et les id des produits
-    let sendData = {contact, products};
+      // Création du tableau contenant les id des produits du panier
+      const products = [];
+      for (let i = 0; i < cart.length; i++) {
+        products.push(cart[i].id);
+      }
 
-    // Méthode POST pour l'envoi des données
-    const options = {
-      method : "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(sendData)
-    };
+      // Création de l'objet contenant les infos clients et les id des produits
+      let sendData = {contact, products};
 
-    fetch("http://localhost:3000/api/products/order", options)
-      .then (response => response.json())
-      .then (data => {
-        window.location.href = './confirmation.html?id=' + data.orderId;   
-      })
+      // Méthode POST pour l'envoi des données
+      const options = {
+        method : "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sendData)
+      };
+
+      fetch("http://localhost:3000/api/products/order", options)
+        .then (response => response.json())
+        .then (data => {
+          window.location.href = './confirmation.html?id=' + data.orderId;   
+        })
+      }
     }
 });
 
