@@ -110,9 +110,9 @@ function changeQuantity(e){
     alert ("Veuillez sélectionner une quantité comprise entre 0 et 100")
     if (foundItem != undefined) {
     e.target.value = foundItem.quantity;
-  } else {
-    e.target.value = 0;
-  }
+    } else {
+      e.target.value = 0;
+    }
   } else {
     newCart[index].quantity = parseInt(e.target.value);
   } 
@@ -173,7 +173,7 @@ let firstNameState = false,
       emailState = false;
 
 // Création des regex
-const nameCityRegExp = /[a-zA-Z^0-9\s]{3,32}/,
+const nameCityRegExp = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i,
       addressRegExp =  /[a-zA-Z0-9\s]{8,32}/,
       emailRegExp =  /[a-zA-Z0-9.-_]+@{1}[a-zA-Z0-9.-_]+\.{1}[a-z]{1,10}/; 
 
@@ -216,7 +216,7 @@ emailState = t ? true : false;
 })
 
 // Envoi des données de la commande à l'API
-order.addEventListener("submit", e => {
+order.addEventListener("click", e => {
   e.preventDefault();
   if (cart.length == 0) {
     alert ("Veuillez ajouter un ou plusieurs articles au panier pour pouvoir passer commande");
