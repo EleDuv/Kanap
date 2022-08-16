@@ -163,7 +163,8 @@ const firstName = document.getElementById("firstName"),
       cityErrorMsg = document.getElementById("cityErrorMsg"),
       email = document.getElementById("email"),
       emailErrorMsg = document.getElementById("emailErrorMsg"),
-      order = document.getElementById("order");
+      order = document.getElementById("order"),
+      form = document.querySelector(".cart__order__form");
 
 // Création de variables d'état pour pouvoir gérer l'envoi du formulaire (si toutes les variables sont à true)
 let firstNameState = false,
@@ -216,7 +217,7 @@ emailState = t ? true : false;
 })
 
 // Envoi des données de la commande à l'API
-order.addEventListener("click", e => {
+form.addEventListener("submit", e => {
   e.preventDefault();
   if (cart.length == 0) {
     alert ("Veuillez ajouter un ou plusieurs articles au panier pour pouvoir passer commande");
@@ -264,6 +265,7 @@ order.addEventListener("click", e => {
         body: JSON.stringify(sendData)
       };
 
+      console.log(options);
       fetch("http://localhost:3000/api/products/order", options)
         .then (response => response.json())
         .then (data => {
