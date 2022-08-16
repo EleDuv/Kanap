@@ -68,7 +68,6 @@ function displayProduct(cart, product) {
   deleteItem.className = "deleteItem";
   deleteItem.innerHTML = "Supprimer"
   deleteItem.addEventListener("click", removeFromCart);
-
   section.appendChild(article);
   article.appendChild(imgDiv);
   imgDiv.appendChild(img);
@@ -107,13 +106,22 @@ function changeQuantity(e){
   const color = cartItem.dataset.color;  
   const foundItem = cart.find(el => el.id == id && el.color == color);
   const index = cart.indexOf(foundItem);
-  newCart[index].quantity = parseInt(e.target.value);
+  if (e.target.value <= 0 || e.target.value >= 100) {
+    alert ("Veuillez sélectionner une quantité comprise entre 0 et 100")
+    if (foundItem != undefined) {
+    e.target.value = foundItem.quantity;
+  } else {
+    e.target.value = 0;
+  }
+  } else {
+    newCart[index].quantity = parseInt(e.target.value);
+  } 
   if (foundItem != undefined) {
     localStorage.setItem("cart", JSON.stringify(newCart));
     document.getElementById("totalQuantity").innerHTML = getNumberProduct();
     let priceArray = loopCart(cart, product);
     setTotalPrice(priceArray);
-  } 
+  }
 }
 
 // Obtention du nombre d'articles
@@ -176,7 +184,7 @@ const firstNameErrorMessage = 'Merci de remplir le champ "Prénom" avec uniqueme
       cityErrorMessage = 'Merci de remplir le champ "Ville" avec uniquement des caractères.',
       emailErrorMessage = "L'email n'est pas valide.";      
 
-// Ecoute sur chaque input et création d'un data-set pour pouvoir traiter le bouton order selon qu'il y ait une erreur ou on
+// Ecoute sur chaque input et changement de la valeur de la variable d'état pour pouvoir traiter le bouton order selon qu'il y ait une erreur ou non
 firstName.addEventListener("keyup", t => {
 t = nameCityRegExp.test(firstName.value);
 firstNameErrorMsg.innerHTML = t ? "" : firstNameErrorMessage;
@@ -208,7 +216,7 @@ emailState = t ? true : false;
 })
 
 // Envoi des données de la commande à l'API
-order.addEventListener("click", e => {
+order.addEventListener("submit", e => {
   e.preventDefault();
   if (cart.length == 0) {
     alert ("Veuillez ajouter un ou plusieurs articles au panier pour pouvoir passer commande");

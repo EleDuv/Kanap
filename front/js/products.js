@@ -37,9 +37,9 @@ function boucle (){
         productText.classList.add("ProductDescription");
         productText.innerHTML = products[i].description;
         
+        productArticle.appendChild(productImg);
         productArticle.appendChild(productText);
         productArticle.appendChild(productTitle);
-        productArticle.appendChild(productImg);
         productLink.appendChild(productArticle);
         document.getElementById("items").appendChild(productLink);
     }
